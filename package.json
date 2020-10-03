@@ -1,0 +1,19 @@
+{
+  "name": "github-add-repo-topic",
+  "version": "1.0.0",
+  "description": "Add a topic to all GitHub repos in an org",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Github",
+    "Topics",
+    "Hacktoberfest"
+  ],
+  "author": "Michael Heap <m@michaelheap.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@octokit/rest": "^18.0.6"
+  }
+}
