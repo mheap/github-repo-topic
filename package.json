@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "description": "Add or remove a topic to all GitHub repos in an org",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "scripts": {},
   "keywords": [
     "Github",
     "Topics",
