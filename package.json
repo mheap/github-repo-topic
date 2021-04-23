@@ -1,6 +1,6 @@
 {
   "name": "github-repo-topic",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Add or remove a topic to all GitHub repos in an org",
   "main": "index.js",
   "scripts": {},
