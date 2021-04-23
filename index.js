@@ -1,18 +1,55 @@
+#!/usr/bin/env node
 const { Octokit } = require("@octokit/rest");
 
-const org = process.argv[2];
-const topic = process.argv[3];
+const yargs = require("yargs/yargs");
+const { hideBin } = require("yargs/helpers");
+const { argv } = require("yargs");
 
-if (!org || !topic) {
-  console.log("Usage: node index.js YOUR_ORG_NAME TOPIC");
-  return;
-}
+yargs(hideBin(process.argv))
+  .command(
+    "add <topic>",
+    "Add a topic to all repos",
+    (yargs) => {
+      yargs.positional("topic", {
+        describe: "The topic to add",
+      });
 
-const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN,
-});
+      yargs.option("org", {
+        describe: "The org to operate on",
+      });
+    },
+    async (argv) => {
+      return run(argv);
+    }
+  )
+  .command(
+    "remove <topic>",
+    "Remove a topic from all repos",
+    (yargs) => {
+      yargs.positional("topic", {
+        describe: "The topic to remove",
+      });
 
-(async function () {
+      yargs.option("org", {
+        describe: "The org to operate on",
+      });
+    },
+    async (argv) => {
+      return run(argv);
+    }
+  )
+  .strictCommands()
+  .demandCommand(1)
+  .demandOption("org").argv;
+
+async function run(argv) {
+  const org = argv.org;
+  const topic = argv.topic;
+
+  const octokit = new Octokit({
+    auth: process.env.GITHUB_TOKEN,
+  });
+
   let repos = await octokit.paginate(
     octokit.repos.listForOrg,
     {
@@ -25,22 +62,33 @@ const octokit = new Octokit({
 
   for (let r of repos) {
     reqs.push(
-      new Promise(async (resolve, reject) => {
+      new Promise(async (resolve) => {
         const owner = r.owner.login;
         const repo = r.name;
 
-        const {
+        let {
           data: { names: names },
         } = await octokit.repos.getAllTopics({
           owner,
           repo,
         });
 
-        if (names.includes(topic)) {
-          return resolve();
-        }
+        if (argv._[0] === "add") {
+          if (names.includes(topic)) {
+            return resolve();
+          }
 
-        names.push(topic);
+          names.push(topic);
+        } else if (argv._[0] === "remove") {
+          if (!names.includes(topic)) {
+            return resolve();
+          }
+          names = names.filter(function (name) {
+            return name !== topic;
+          });
+        } else {
+          console.log(`Unknown command: ${argv._[0]}`);
+        }
 
         await octokit.repos.replaceAllTopics({
           owner,
@@ -54,4 +102,4 @@ const octokit = new Octokit({
   }
 
   await Promise.all(reqs);
-})();
+}

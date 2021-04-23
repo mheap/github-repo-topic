@@ -1,7 +1,7 @@
 {
-  "name": "github-add-repo-topic",
+  "name": "github-repo-topic",
   "version": "1.0.0",
-  "description": "Add a topic to all GitHub repos in an org",
+  "description": "Add or remove a topic to all GitHub repos in an org",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,6 +14,10 @@
   "author": "Michael Heap <m@michaelheap.com>",
   "license": "MIT",
   "dependencies": {
-    "@octokit/rest": "^18.0.6"
+    "@octokit/rest": "^18.0.6",
+    "yargs": "^16.2.0"
+  },
+  "bin": {
+    "github-repo-topic": "index.js"
   }
 }
